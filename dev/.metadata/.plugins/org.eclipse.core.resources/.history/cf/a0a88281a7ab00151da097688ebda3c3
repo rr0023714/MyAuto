@@ -1,0 +1,27 @@
+package DataStructures;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class ArrayListExample {
+
+	public static void main(String[] args) {
+	
+		ArrayList<String> ArrList = new ArrayList<String>();
+		ArrList.add(0, "China");
+		ArrList.add(1, "Japan");
+		ArrList.add(2, "USA");
+		ArrList.add(3,"Cannada");
+		ArrList.add(4, "Russia");
+		ArrList.add(5, "Ukraine");
+		
+		System.out.println(ArrList);
+		System.out.println("After Sorting");
+		Collections.sort(ArrList);
+		System.out.println(ArrList);
+		System.out.println("After Reverse");
+		Collections.reverse(ArrList);
+		System.out.println(ArrList);
+	}
+
+}

@@ -1,0 +1,35 @@
+import java.util.Scanner;
+
+
+public class MinMaxArray {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		final int COUNT;
+		
+		//Take user input
+		Scanner in = new Scanner(System.in);
+		System.out.println("Enter the Count:");
+		COUNT = in.nextInt();
+		int [] intArray = new int [COUNT];
+		System.out.println("Enter the integers:");
+		for(int i=0; i<COUNT;i++){
+			intArray[i]=in.nextInt();
+		}
+	
+		
+	/*	while(in.hasNextInt()){
+
+		}
+*/
+		
+	}
+
+
+
+
+
+}
+
+

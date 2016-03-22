@@ -1,0 +1,36 @@
+package com.code.svn;
+
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class LearnCss {
+
+	public static void main(String[] args) {
+
+			WebDriver driver = new FirefoxDriver();
+			driver.get("https://www.amazon.com");
+			driver.manage().window().maximize(); 
+			// # is used for id. Different ways of representing css with id
+			
+			//driver.findElement(By.cssSelector("#twotabsearchtextbox")).sendKeys("Shiva");
+			//driver.findElement(By.cssSelector("input#twotabsearchtextbox")).sendKeys("Shiva");
+			//driver.findElement(By.cssSelector("input[id=twotabsearchtextbox]")).sendKeys("Shiva");
+			
+			driver.findElement(By.cssSelector("input[name=field-keywords]")).sendKeys("Shiva books");
+			
+			// . is used for class
+			//driver.findElement(By.cssSelector(".nav-input")).click();
+			driver.findElement(By.cssSelector("input.nav-input")).click();
+			//driver.findElement(By.cssSelector("input[class=nav-input]")).click();
+			
+			driver.findElement(By.xpath("//a/img[contains(@src,'http://ecx.images-amazon.com/images/I/51P9V9GRanL._AA')]")).click();
+		
+			
+			
+	}
+
+}

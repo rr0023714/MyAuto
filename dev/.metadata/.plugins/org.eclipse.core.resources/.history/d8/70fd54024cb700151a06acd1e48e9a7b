@@ -1,0 +1,21 @@
+package com.code.svn;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class LearnCss {
+
+	public static void main(String[] args) {
+
+			WebDriver driver = new FirefoxDriver();
+			driver.get("https://www.amazon.com");
+			driver.manage().window().maximize(); 
+			// # is used for id
+			//driver.findElement(By.cssSelector("#twotabsearchtextbox")).sendKeys("Shiva");
+			driver.findElement(By.cssSelector("input#twotabsearchtextbox")).sendKeys("Shiva");
+			// . is used for class
+			driver.findElement(By.cssSelector(".nav-input")).click();
+	}
+
+}

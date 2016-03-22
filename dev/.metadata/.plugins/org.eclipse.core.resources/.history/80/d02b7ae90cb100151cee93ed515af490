@@ -1,0 +1,35 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+
+public class CountWordsFromFile {
+
+	public static void main(String[] args) throws FileNotFoundException {
+		
+		//Use Scanner to read file line by line
+		List<String> arrList = new ArrayList<String>();
+		String [] arr;
+		FileInputStream fis= new FileInputStream("coverletter.txt");
+		Scanner file = new Scanner(fis);
+		
+		while(file.hasNextLine()){
+			String str = file.nextLine();
+			arr=str.split(" ");
+			System.out.println(str);
+		}
+		
+		// separate each words from line and add to arraylist
+		
+		
+		
+		// count the words in the arraylist
+		
+		
+		
+
+	}
+
+}

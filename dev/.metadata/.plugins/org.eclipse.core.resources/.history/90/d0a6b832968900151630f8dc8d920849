@@ -1,0 +1,11 @@
+package JavaPrograms;
+
+public class Propogate{
+	
+	void calculate(){
+		int m=25, i =1;
+		i=m/i;
+		
+	}
+	
+}

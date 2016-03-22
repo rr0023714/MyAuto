@@ -1,0 +1,27 @@
+import java.util.Scanner;
+
+
+public class CountWordsFromFile {
+
+	public static void main(String[] args) {
+		
+		//Use Scanner to read file line by line
+		
+		Scanner file = new Scanner("coverletter.txt");
+		while(file.hasNextLine()){
+			String str = file.nextLine();
+			System.out.println(str);
+		}
+		
+		// separate each words from line and add to arraylist
+		
+		
+		
+		// count the words in the arraylist
+		
+		
+		
+
+	}
+
+}

@@ -1,0 +1,42 @@
+import java.util.Arrays;
+
+public class BinarySearch {
+
+	public static void main(String[] args) {
+		final int COUNT=(int) 10E5;
+		int value =77732;
+		int [] Array = new int[(int) 10E5];
+		for(int i=0;i<10E5;i++){
+			Array[i]=i+1;
+		}
+		
+		//System.out.println(Array[700]);
+		Arrays.sort(Array);
+		//System.out.println(Array[700]);
+		int startIndex=0;
+		int endIndex=COUNT-1, median;
+		median = startIndex + endIndex/2;
+		System.out.println("Middle is: "+median);
+		
+		while(startIndex<=endIndex)
+		{
+			if(Array[median]==value)
+			{
+				System.out.println("Value is found at index: " +median);
+				break;
+			}
+			else if(Array[median]<value)
+			{
+				startIndex=median+1;
+				median = startIndex + endIndex/2;
+				System.out.println("Middle now is: " +median + " Start now is: " +startIndex); 
+					}
+			else 
+			{	endIndex= median-1;
+				median = startIndex + endIndex/2;
+				System.out.println("End now is: " +endIndex + " middle now is: " +median); 
+			}
+				
+		}
+	}
+}

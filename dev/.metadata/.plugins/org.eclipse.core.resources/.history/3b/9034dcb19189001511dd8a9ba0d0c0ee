@@ -1,0 +1,13 @@
+package JavaPrograms;
+
+public class ExceptionHandling2{
+	try{
+		String text = "test";
+		System.out.println(text.charAt(3));
+		int n = Integer.parseInt("abc");
+		}
+	catch(Exception e)
+	{
+		System.err.println("Something bad happened" + e.getMessage());
+	}
+}

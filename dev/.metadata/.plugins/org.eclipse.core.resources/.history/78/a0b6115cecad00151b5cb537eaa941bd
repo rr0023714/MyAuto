@@ -1,0 +1,35 @@
+import java.util.Scanner;
+
+
+public class DuplicateSearch {
+
+	public static void main(String[] args) {
+	
+		//Take user input for number of elements
+		
+		Scanner in = new Scanner(System.in);
+		int [] arr1 = new int [10];
+		int i =0;
+		System.out.println("Enter 10 integer inputs");
+		while(in.hasNextInt()){
+			arr1[i]= in.nextInt();
+			i++;
+			if(i==9){
+				break;
+			}
+		}
+		
+		for(int j=0;j<10;j++){
+			System.out.println(arr1[j]);
+		}
+
+		//Take user input for each elements
+		
+		
+		//Transfer the array elemnts to a set to sort out the duplicates
+		
+
+		}
+		}
+
+

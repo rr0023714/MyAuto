@@ -1,0 +1,24 @@
+package com.code.svn;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class GmailLoginPage extends BasePage{
+
+	public GmailLoginPage(WebDriver driver) {
+		super(driver);
+		
+	}
+
+	By googleApps = By.xpath(".//*[@id='gbwa']/div[1]/a");
+	By gmaillink = By.xpath(".//*[@id='gb23']/span[1]");
+	
+	public void getGoogleApps() {
+		driver.findElement(googleApps).click();
+	}
+	public void getGmaillink() {
+		driver.findElement(gmaillink).click();
+	}
+	
+	
+}

@@ -1,0 +1,15 @@
+package JavaPrograms;
+
+public class ExceptionHandling2{
+	
+	public static void main(String[] args){
+	try{
+		String text = "test";
+		System.out.println(text.charAt(5));
+		int n = Integer.parseInt("abc");
+		}
+	catch(Exception e)	{
+		System.err.println("Something bad happened" + e.getMessage() );
+		}
+	}
+}

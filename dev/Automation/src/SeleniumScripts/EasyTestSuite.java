@@ -1,0 +1,276 @@
+package SeleniumScripts;
+/*
+Step1: Go to https://easy.techmahindra.com/EasyHome.aspx
+Step2: click HR-HOME
+Step3:you may have to give credentials
+Step4: Mouse over on Quick links
+Step5: click Igreet
+Step6: send an email 
+
+Functionality covered in this test
+1) how to handle multiple windows
+2) Different uses of x-path to identify web elements
+3) Data import using excel- Data driven testing
+
+Items pending:
+1)advance reporting
+2)logging
+3)use asserts more efficiently
+4)screenshot
+5)waiting efficiently.
+
+*
+*/
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
+import org.testng.annotations.Test;
+
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
+import com.relevantcodes.extentreports.LogStatus;
+
+@Listeners(SeleniumScripts.Listners.class)
+
+public class EasyTestSuite  {
+	
+	private static WebDriver driver;
+	private WebDriverWait wait;
+	private String baseUrl;
+	private Utility utilityObj;
+	private static EventFiringWebDriver eDriver;
+	ExtentReports report;
+	ExtentTest test;
+	
+	public static EventFiringWebDriver getDriver() {
+        return eDriver;
+	}
+	
+	@BeforeClass
+	public void beforeClass(){
+		report = new ExtentReports("C:\\Automation\\ExtentReports\\Easy.html");
+		test = report.startTest("Easy", "Easy Tests");
+		
+	}
+	
+	@BeforeMethod
+	@Parameters("browser")
+	public void setup(String browser){
+		// Code to launch URL
+		if(browser.equalsIgnoreCase("IE")){
+			System.setProperty("webdriver.ie.driver", "C:\\Automation\\IEDriverServer\\IEDriverServer.exe");
+			driver = new InternetExplorerDriver();			
+		}
+		else if(browser.equalsIgnoreCase("Chrome")){
+			System.setProperty("webdriver.chrome.driver", "C:\\Automation\\ChromeDriver\\chromedriver.exe");
+			driver = new ChromeDriver();
+		}
+		else{
+		 driver = new FirefoxDriver();
+		}
+		
+		baseUrl = "https://easy.techmahindra.com/EasyHome.aspx";
+		report = new ExtentReports("C:\\Automation\\ExtentReports\\Easy.html");
+		test = report.startTest("Easy", "Easy Tests");
+		
+		
+		driver.get(baseUrl);
+		test.log(LogStatus.INFO, "browser launched");
+		driver.manage().window().maximize();
+		test.log(LogStatus.INFO, "window maximized");
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		eDriver = new EventFiringWebDriver(driver);
+		Listners lis= new Listners();
+		eDriver.register(lis);
+		
+	}
+	
+	@Test
+	public void sendIgreet() throws InterruptedException, IOException{
+		utilityObj = new Utility();
+		String userName = utilityObj.readExcelConfig("C:\\MyAuto\\Excelsheets\\EasyData.xlsx", 1, 1, "CommonData");
+		String passWord = utilityObj.readExcelConfig("C:\\MyAuto\\Excelsheets\\EasyData.xlsx", 2, 1, "CommonData");
+		eDriver.findElement(By.xpath("//input[@id='txtLanId']")).sendKeys(userName);
+		eDriver.findElement(By.xpath("//input[@id='txtPassword']")).sendKeys(passWord);
+		eDriver.findElement(By.xpath("//input[@id='imgLogin']")).click();
+		test.log(LogStatus.INFO, "user name, password was entered");
+		
+		//do some assertion after click
+		Thread.sleep(2000);		
+	
+		eDriver.findElement(By.xpath("//a[text()=' Human Resource  (HR)']")).click();
+		eDriver.findElement(By.xpath("//a[text()='HR-Home']")).click();
+				
+		//calling AutoIT script for Windows Authentication.
+		Thread.sleep(2000);	
+		Runtime.getRuntime().exec("C:\\MyAuto\\AutoITscripts\\WinAuthentication.exe");
+		
+		utilityObj.getWindowHandle(eDriver, "Welcome to HR");
+		
+		wait = new WebDriverWait(eDriver, 100);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@id='MenuControl_txtSearch']")));
+		
+		Actions action = new Actions(eDriver);
+		WebElement mainElement = eDriver.findElement(By.xpath("//a[text()='Quick Links']"));
+		WebElement subElement = eDriver.findElement(By.xpath("//a[text()='Igreet1']"));
+		action.moveToElement(mainElement).click(subElement).build().perform();
+		test.log(LogStatus.INFO, "I greet is clicked");
+		test.log(LogStatus.PASS, "I greet was clicked, test has passed");
+		
+	}
+	
+	@Test(enabled=false)
+	public void fillTimesheet() throws Exception{
+		
+		utilityObj = new Utility();
+		String userName = utilityObj.readExcelConfig2("C:\\MyAuto\\Excelsheets\\EasyData.xlsx", 1, 1, "CommonData");
+		String passWord = utilityObj.readExcelConfig2("C:\\MyAuto\\Excelsheets\\EasyData.xlsx", 2, 1, "CommonData");
+		String inTime = utilityObj.readExcelConfig2("C:\\MyAuto\\Excelsheets\\EasyData.xlsx", 1, 1, "fillTimesheet");
+		String outTime = utilityObj.readExcelConfig2("C:\\MyAuto\\Excelsheets\\EasyData.xlsx", 2, 1, "fillTimesheet");
+		eDriver.findElement(By.xpath("//input[@id='txtLanId']")).sendKeys(userName);
+		eDriver.findElement(By.xpath("//input[@id='txtPassword']")).sendKeys(passWord);
+		eDriver.findElement(By.xpath("//input[@id='imgLogin']")).click();
+		Thread.sleep(2000);
+		eDriver.findElement(By.xpath("//a[text()=' Human Resource  (HR)']")).click();
+		eDriver.findElement(By.xpath("//a[text()='My Time']")).click();
+		Thread.sleep(5000);
+		utilityObj.getWindowHandle(eDriver, "Welcome to MyTime");
+		
+		boolean b= utilityObj.assertString(eDriver, "Welcome to MyTime");
+		if(b){
+		eDriver.findElement(By.xpath("//input[@id='chkAcknow']")).click();;
+		eDriver.findElement(By.xpath("//img[contains(@src,'../images/fillTimesheet.png')]")).click();
+		}		
+		
+		//eDriver.findElement(By.xpath("//a[@id='lnkPrevious']")).click();
+	//	Thread.sleep(5000);
+		
+		WebElement element = eDriver.findElement(By.id("gvTimeSheet"));
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[2]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[2]/td[3]/div/input")).sendKeys(inTime);
+		element.findElement(By.xpath("//table/tbody/tr[2]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[2]/td[4]/table/tbody/tr/td/div/input")).sendKeys(outTime);
+		utilityObj.selectOption("//tbody/tr[2]/td[5]/select", element);
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[3]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[3]/td[3]/div/input")).sendKeys(inTime);
+		element.findElement(By.xpath("//table/tbody/tr[3]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[3]/td[4]/table/tbody/tr/td/div/input")).sendKeys("outTime");
+		utilityObj.selectOption("//tbody/tr[3]/td[5]/select", element);
+		
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[4]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[4]/td[3]/div/input")).sendKeys("05:59");
+		
+		element.findElement(By.xpath("//table/tbody/tr[4]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[4]/td[4]/table/tbody/tr/td/div/input")).sendKeys("13:59");
+		
+		utilityObj.selectOption("//tbody/tr[4]/td[5]/select", element);
+		
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[5]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[5]/td[3]/div/input")).sendKeys("05:59");
+		
+		element.findElement(By.xpath("//table/tbody/tr[5]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[5]/td[4]/table/tbody/tr/td/div/input")).sendKeys("13:59");
+		
+		utilityObj.selectOption("//tbody/tr[5]/td[5]/select", element);
+		
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[6]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[6]/td[3]/div/input")).sendKeys("05:59");
+		
+		element.findElement(By.xpath("//table/tbody/tr[6]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[6]/td[4]/table/tbody/tr/td/div/input")).sendKeys("13:59");
+		
+		utilityObj.selectOption("//tbody/tr[6]/td[5]/select", element);
+		
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[9]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[9]/td[3]/div/input")).sendKeys("05:59");
+		
+		element.findElement(By.xpath("//table/tbody/tr[9]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[9]/td[4]/table/tbody/tr/td/div/input")).sendKeys("13:59");
+		
+		utilityObj.selectOption("//tbody/tr[9]/td[5]/select",element);
+		
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[10]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[10]/td[3]/div/input")).sendKeys("05:59");
+		
+		element.findElement(By.xpath("//table/tbody/tr[10]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[10]/td[4]/table/tbody/tr/td/div/input")).sendKeys("13:59");
+		
+		utilityObj.selectOption("//tbody/tr[10]/td[5]/select", element);
+		
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[11]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[11]/td[3]/div/input")).sendKeys("05:59");
+	
+		element.findElement(By.xpath("//table/tbody/tr[11]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[11]/td[4]/table/tbody/tr/td/div/input")).sendKeys("13:59");
+		
+		utilityObj.selectOption("//tbody/tr[11]/td[5]/select", element);
+		
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[12]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[12]/td[3]/div/input")).sendKeys("05:59");
+		
+		element.findElement(By.xpath("//table/tbody/tr[12]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[12]/td[4]/table/tbody/tr/td/div/input")).sendKeys("13:59");
+		
+		utilityObj.selectOption("//tbody/tr[12]/td[5]/select",element);
+		
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[13]/td[3]/div/input")).click();
+		element.findElement(By.xpath("//table[@id='gvTimeSheet']/tbody/tr[13]/td[3]/div/input")).sendKeys("05:59");
+		
+		element.findElement(By.xpath("//table/tbody/tr[13]/td[4]/table/tbody/tr/td/div/input")).click();
+		element.findElement(By.xpath("//table/tbody/tr[13]/td[4]/table/tbody/tr/td/div/input")).sendKeys("13:59");
+		
+		utilityObj.selectOption("//tbody/tr[13]/td[5]/select", element);
+		
+		
+		//driver.close();
+	}
+	
+	@AfterMethod
+	public void takeScreenShotOnFailure(ITestResult testResult) throws IOException { 
+		if (testResult.getStatus() == ITestResult.FAILURE){ 
+			test.log(LogStatus.FAIL, "Test failed");
+			System.out.println(testResult.getStatus()); 
+			File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+			StringBuilder sb =new StringBuilder(); 
+			sb.append("C:\\MyAuto\\Screenshots\\").append(testResult.getName());
+			String fileName= sb + ".png" ;
+			FileUtils.copyFile(scrFile, new File(fileName));
+			test.addScreenCapture(fileName);
+			
+		}
+		report.endTest(test);
+		report.flush();
+		
+	}
+	
+	
+	
+	
+}
